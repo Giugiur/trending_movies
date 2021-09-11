@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'movie.dart';
+import 'movie_tile.dart';
 import 'movies_provider.dart';
 
 class MoviesScreen extends StatefulWidget {
@@ -21,7 +22,9 @@ class _MoviesScreenState extends State<MoviesScreen> {
         _isLoading = true;
       });
       Provider.of<Movies>(context, listen: false).fetchMovies().then((response) {
-        _movies = response;
+        setState(() {
+          _movies = response;
+        });
       }).catchError((error) {
         //TODO: Handle error
       }).whenComplete(() => setState(() {
@@ -37,8 +40,20 @@ class _MoviesScreenState extends State<MoviesScreen> {
         title: const Text('Trending Movies')
       ),
       body: Container(
-        padding: const EdgeInsets.all(20),
-        child: _isLoading ? const Center(child: CircularProgressIndicator(),) : const Text('Hello'),
+        padding: const EdgeInsets.all(10),
+        child: _isLoading ? const Center(child: CircularProgressIndicator(),)
+        : SingleChildScrollView(
+          child: ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (ctx, index) => Container(
+              padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 0),
+              child: MovieTile(_movies[index])
+            ),
+            itemCount: _movies.length,
+          ),
+        )
+        ,
       ),
     );
   }
