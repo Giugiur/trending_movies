@@ -13,6 +13,7 @@ class MoviesScreen extends StatefulWidget {
 
 class _MoviesScreenState extends State<MoviesScreen> {
   List<Movie> _movies = [];
+  bool _isError = false;
   final ScrollController _scrollController = ScrollController();
 
   void _addMoreMovies() async {
@@ -23,7 +24,9 @@ class _MoviesScreenState extends State<MoviesScreen> {
           _movies.addAll(response);
         });
       }).catchError((error) {
-        //TODO: Handle error
+        setState(() {
+          _isError = true;
+        });
       });
     }
   }
@@ -55,17 +58,19 @@ class _MoviesScreenState extends State<MoviesScreen> {
       ),
       body: Container(
         padding: const EdgeInsets.all(10),
-        child: ListView.builder(
-          shrinkWrap: true,
-          controller: _scrollController,
-          itemBuilder: (ctx, index) => Container(
-            padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 0),
-            child: index == _movies.length && moviesProvider.currentPage < moviesProvider.maxPages
-              ? const Center(child: CircularProgressIndicator(),)
-              : MovieTile(_movies[index])
-          ),
-          itemCount: _movies.length + 1,
-        ),
+        child: _isError
+          ? const Text('There was an error loading the movies, please come back later.')
+          : ListView.builder(
+              shrinkWrap: true,
+              controller: _scrollController,
+              itemBuilder: (ctx, index) => Container(
+                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 0),
+                child: index == _movies.length && moviesProvider.currentPage < moviesProvider.maxPages
+                  ? const Center(child: CircularProgressIndicator(),)
+                  : MovieTile(_movies[index])
+              ),
+              itemCount: _movies.length + 1,
+            ),
       ),
     );
   }

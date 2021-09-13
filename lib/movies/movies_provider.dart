@@ -28,7 +28,7 @@ class Movies with ChangeNotifier {
       notifyListeners();
       return movies;
     } catch (error) {
-      throw Exception('Failed to fetch movies');
+      rethrow;
     }
   }
 }
