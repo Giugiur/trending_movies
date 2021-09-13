@@ -5,6 +5,8 @@ import 'movie_tile.dart';
 import 'movies_provider.dart';
 
 class MoviesScreen extends StatefulWidget {
+  const MoviesScreen({Key? key}) : super(key: key);
+
   @override
   _MoviesScreenState createState() => _MoviesScreenState();
 }
@@ -14,14 +16,16 @@ class _MoviesScreenState extends State<MoviesScreen> {
   final ScrollController _scrollController = ScrollController();
 
   void _addMoreMovies() async {
-    //TODO: Don't make the request if we are standing on the last page
-    Provider.of<Movies>(context, listen: false).fetchMovies().then((response) {
-      setState(() {
-        _movies.addAll(response);
+    var moviesProvider = Provider.of<Movies>(context, listen: false);
+    if (moviesProvider.currentPage < moviesProvider.maxPages) {
+      moviesProvider.fetchMovies().then((response) {
+        setState(() {
+          _movies.addAll(response);
+        });
+      }).catchError((error) {
+        //TODO: Handle error
       });
-    }).catchError((error) {
-      //TODO: Handle error
-    });
+    }
   }
 
   @override
@@ -43,6 +47,8 @@ class _MoviesScreenState extends State<MoviesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var moviesProvider = Provider.of<Movies>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Trending Movies'),
@@ -54,7 +60,7 @@ class _MoviesScreenState extends State<MoviesScreen> {
           controller: _scrollController,
           itemBuilder: (ctx, index) => Container(
             padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 0),
-            child: index == _movies.length //TODO: && we are not standing on last page
+            child: index == _movies.length && moviesProvider.currentPage < moviesProvider.maxPages
               ? const Center(child: CircularProgressIndicator(),)
               : MovieTile(_movies[index])
           ),

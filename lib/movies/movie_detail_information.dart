@@ -7,7 +7,8 @@ class MovieDetailInformation extends StatelessWidget {
   const MovieDetailInformation({
     required this.label,
     required this.text,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

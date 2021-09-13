@@ -8,10 +8,14 @@ import '../utils/keys.dart';
 
 class Movies with ChangeNotifier {
 
-  int _page = 1;
+  int _currentPage = 1;
+  int? _maxPages;
+
+  int get currentPage => _currentPage;
+  int get maxPages => _maxPages ?? 99999;
 
   Future<List<Movie>> fetchMovies() async {
-    final url = Uri.parse(BASE_API_URL + API_KEY +'&page=$_page');
+    final url = Uri.parse(BASE_API_URL + API_KEY +'&page=$_currentPage');
     List<Movie> movies = [];
     try {
       final response = await http.get(url);
@@ -19,7 +23,9 @@ class Movies with ChangeNotifier {
       extractedData['results'].forEach((value) {
         movies.add(buildMovie(value));
       });
-      _page++;
+      _currentPage++;
+      _maxPages ??= extractedData['total_pages'];
+      notifyListeners();
       return movies;
     } catch (error) {
       throw Exception('Failed to fetch movies');

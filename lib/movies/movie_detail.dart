@@ -5,6 +5,7 @@ import 'movie_detail_information.dart';
 import '../utils/constants.dart';
 
 class MovieDetail extends StatelessWidget {
+  const MovieDetail({Key? key}) : super(key: key);
   static const routeName = '/movie_detail';
 
   @override
