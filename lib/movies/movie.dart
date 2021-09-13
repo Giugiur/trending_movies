@@ -6,6 +6,7 @@ class Movie {
     required this.image,
     required this.overview,
     required this.releaseDate,
+    required this.rating,
   });
 
   final int id;
@@ -13,4 +14,5 @@ class Movie {
   final String image;
   final String overview;
   final String releaseDate;
+  final double rating;
 }

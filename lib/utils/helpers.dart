@@ -7,6 +7,7 @@ Movie buildMovie(movie) {
     title: movie['title'],
     image: movie['poster_path'],
     overview: movie['overview'],
-    releaseDate: DateFormat.yMMMMd('en_US').format(DateTime.parse(movie['release_date']))
+    releaseDate: DateFormat.yMMMMd('en_US').format(DateTime.parse(movie['release_date'])),
+    rating: movie['vote_average']
   );
 }

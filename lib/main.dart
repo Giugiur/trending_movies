@@ -19,8 +19,8 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Trending Movies',
         theme: ThemeData(
-          primarySwatch: Colors.yellow,
-          brightness: Brightness.dark
+          primarySwatch: Colors.amber,
+          brightness: Brightness.dark,
         ),
         home: MoviesScreen(),
         routes: {
