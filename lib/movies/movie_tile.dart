@@ -23,14 +23,24 @@ class MovieTile extends StatelessWidget {
         children: [
           Expanded(
             flex: 30,
-            child: Hero(
-              tag: _movie.id,
-              child: FadeInImage.memoryNetwork(
-                placeholder: kTransparentImage,
-                image: BASE_IMG_URL + _movie.image,
-                height: 150,
-                fit: BoxFit.cover
-              ),
+            child: Stack(
+              children: <Widget>[
+                const SizedBox(
+                  height: 150,
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+                Center(
+                  child: Hero(
+                    tag: _movie.id,
+                    child: FadeInImage.memoryNetwork(
+                        placeholder: kTransparentImage,
+                        image: BASE_IMG_URL + _movie.image,
+                        height: 150,
+                        fit: BoxFit.cover
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           Expanded(
@@ -41,12 +51,10 @@ class MovieTile extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
               ),
-              subtitle: Container(
-                child: Text(
-                  _movie.overview,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 6,
-                ),
+              subtitle: Text(
+                _movie.overview,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 6,
               ),
               trailing: const Icon(Icons.chevron_right),
             )

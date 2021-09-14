@@ -7,24 +7,57 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 
 import 'package:trending_movies/main.dart';
+import 'package:trending_movies/movies/movie.dart';
+import 'package:trending_movies/movies/movies_provider.dart';
+import 'widget_test.mocks.dart';
 
+@GenerateMocks([Movies])
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  group('Testing Movies Provider', () {
+    var moviesProvider = Movies();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    test('Increase the current page', () async {
+      expect(moviesProvider.currentPage, 1);
+      await moviesProvider.fetchMovies();
+      expect(moviesProvider.currentPage, 2);
+    });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    test('Set the max pages', () async {
+      await moviesProvider.fetchMovies();
+      expect(moviesProvider.currentPage, isNot(null));
+    });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    test('Add movies to the list', () async {
+      var mock = MockMovies();
+      when(mock.fetchMovies())
+        .thenAnswer((_) async => [
+          Movie(
+            id: 1,
+            title: 'Foo',
+            image: '/some_string.jpg',
+            overview: 'Overview 1',
+            releaseDate: 'Some release date',
+            rating: 5
+          ),
+          Movie(
+              id: 2,
+              title: 'Bar',
+              image: '/some_other_string.jpg',
+              overview: 'Overview 2',
+              releaseDate: 'Some other release date',
+              rating: 6
+          )
+        ]);
+      List<Movie> movies = [];
+      movies.addAll(await mock.fetchMovies());
+      expect(movies.length, 2);
+    });
+
   });
 }
